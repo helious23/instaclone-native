@@ -5,7 +5,6 @@ import { Asset } from "expo-asset";
 import React, { useState } from "react";
 import { LoggedOutNav } from "./navigators/LoggedOutNav";
 import { NavigationContainer } from "@react-navigation/native";
-import { Appearance, AppearanceProvider } from "react-native-appearance";
 
 export default function App() {
   // AppLoading part
@@ -14,7 +13,7 @@ export default function App() {
   const preload = () => {
     const fontsToLoad = [Ionicons.font]; // 사용할 icon.font 파일 로드
     const fontPromises = fontsToLoad.map((font) => Font.loadAsync(font)); // Array 형태의 promise 로 return
-    const imagesToLoad = [require("./assets/logo.png")];
+    const imagesToLoad = [require("./assets/logo_white.png")];
     const imagePromises = imagesToLoad.map((image) => Asset.loadAsync(image));
     return Promise.all([...fontPromises, ...imagePromises]);
   };
@@ -27,15 +26,10 @@ export default function App() {
       />
     );
   }
-  const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-    console.log(colorScheme);
-  });
 
   return (
-    <AppearanceProvider>
-      <NavigationContainer>
-        <LoggedOutNav />
-      </NavigationContainer>
-    </AppearanceProvider>
+    <NavigationContainer>
+      <LoggedOutNav />
+    </NavigationContainer>
   );
 }
