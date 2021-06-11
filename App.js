@@ -5,6 +5,10 @@ import { Asset } from "expo-asset";
 import React, { useState } from "react";
 import { LoggedOutNav } from "./navigators/LoggedOutNav";
 import { NavigationContainer } from "@react-navigation/native";
+import { AppearanceProvider } from "react-native-appearance";
+import { ThemeProvider } from "styled-components";
+
+import { darkTheme, lightTheme, theme } from "./styles";
 
 export default function App() {
   // AppLoading part
@@ -13,7 +17,10 @@ export default function App() {
   const preload = () => {
     const fontsToLoad = [Ionicons.font]; // 사용할 icon.font 파일 로드
     const fontPromises = fontsToLoad.map((font) => Font.loadAsync(font)); // Array 형태의 promise 로 return
-    const imagesToLoad = [require("./assets/logo_white.png")];
+    const imagesToLoad = [
+      require("./assets/logo_white.png"),
+      require("./assets/logo_black.png"),
+    ];
     const imagePromises = imagesToLoad.map((image) => Asset.loadAsync(image));
     return Promise.all([...fontPromises, ...imagePromises]);
   };
@@ -28,8 +35,12 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <LoggedOutNav />
-    </NavigationContainer>
+    <AppearanceProvider>
+      <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+        <NavigationContainer>
+          <LoggedOutNav />
+        </NavigationContainer>
+      </ThemeProvider>
+    </AppearanceProvider>
   );
 }
