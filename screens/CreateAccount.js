@@ -1,10 +1,13 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
 import { AuthButton } from "../components/auth/AuthButton";
 import { AuthLayout } from "../components/auth/AuthLayout";
 import { TextInput } from "../components/auth/AuthShared";
 import { theme } from "../styles";
 
 export const CreateAccount = () => {
+  const { register, handleSubmit, setValue } = useForm();
+
   const lastNameRef = useRef();
   const usernameRef = useRef();
   const emailRef = useRef();
@@ -13,9 +16,17 @@ export const CreateAccount = () => {
   const onNext = (nextOne) => {
     nextOne?.current?.focus();
   };
-  const onDone = () => {
-    alert("Done");
+  const onValid = (data) => {
+    console.log(data);
   };
+
+  useEffect(() => {
+    register("firstName");
+    register("lastName");
+    register("email");
+    register("username");
+    register("password");
+  }, [register]);
 
   return (
     <AuthLayout>
@@ -26,6 +37,7 @@ export const CreateAccount = () => {
         }
         returnKeyType="next"
         onSubmitEditing={() => onNext(lastNameRef)}
+        onChangeText={(text) => setValue("firstName", text)}
       />
       <TextInput
         ref={lastNameRef}
@@ -35,8 +47,10 @@ export const CreateAccount = () => {
         }
         returnKeyType="next"
         onSubmitEditing={() => onNext(usernameRef)}
+        onChangeText={(text) => setValue("lastName", text)}
       />
       <TextInput
+        autoCapitalize={"none"}
         ref={usernameRef}
         placeholder="Username"
         placeholderTextColor={
@@ -44,8 +58,10 @@ export const CreateAccount = () => {
         }
         returnKeyType="next"
         onSubmitEditing={() => onNext(emailRef)}
+        onChangeText={(text) => setValue("username", text)}
       />
       <TextInput
+        autoCapitalize={"none"}
         ref={emailRef}
         placeholder="Email"
         placeholderTextColor={
@@ -54,8 +70,10 @@ export const CreateAccount = () => {
         keyboardType="email-address"
         returnKeyType="next"
         onSubmitEditing={() => onNext(passwordRef)}
+        onChangeText={(text) => setValue("email", text)}
       />
       <TextInput
+        autoCapitalize={"none"}
         ref={passwordRef}
         placeholder="Password"
         placeholderTextColor={
@@ -64,12 +82,13 @@ export const CreateAccount = () => {
         secureTextEntry
         returnKeyType="done"
         lastOne={true}
-        onSubmitEditing={onDone}
+        onSubmitEditing={handleSubmit(onValid)}
+        onChangeText={(text) => setValue("password", text)}
       />
       <AuthButton
         text={"Create Account"}
         disabled={true}
-        onPress={() => null}
+        onPress={handleSubmit(onValid)}
       />
     </AuthLayout>
   );
