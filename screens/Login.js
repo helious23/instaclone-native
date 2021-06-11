@@ -1,15 +1,39 @@
-import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import React, { useRef } from "react";
+import { AuthButton } from "../components/auth/AuthButton";
+import { AuthLayout } from "../components/auth/AuthLayout";
+import { TextInput } from "../components/auth/AuthShared";
+import { theme } from "../styles";
 
-export const Login = ({ navigation }) => {
+export const Login = () => {
+  const passwordRef = useRef();
+  const onNext = (nextOne) => {
+    nextOne?.current?.focus();
+  };
+  const onDone = () => {
+    alert("Done");
+  };
   return (
-    <View>
-      <Text>Login</Text>
-      <TouchableOpacity onPress={() => navigation.navigate("CreateAccount")}>
-        <View>
-          <Text>Go to Create Account</Text>
-        </View>
-      </TouchableOpacity>
-    </View>
+    <AuthLayout>
+      <TextInput
+        placeholder="Username"
+        placeholderTextColor={
+          theme === "dark" ? "rgba(255, 255, 255, 0.8)" : "gray"
+        }
+        returnKeyType="next"
+        onSubmitEditing={() => onNext(passwordRef)}
+      />
+      <TextInput
+        ref={passwordRef}
+        placeholder="Password"
+        placeholderTextColor={
+          theme === "dark" ? "rgba(255, 255, 255, 0.8)" : "gray"
+        }
+        secureTextEntry
+        returnKeyType="done"
+        lastOne={true}
+        onSubmitEditing={onDone}
+      />
+      <AuthButton text={"Log in"} disabled={true} onPress={() => null} />
+    </AuthLayout>
   );
 };

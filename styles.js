@@ -8,6 +8,9 @@ export const lightTheme = {
   bgColor: "#fff",
   facebookColor: "#385285",
   blue: "#0095f6",
+  formBgColor: "white",
+  formBorderColor: "lightgray",
+  formFontColor: "black",
 };
 export const darkTheme = {
   accent: "gray",
@@ -15,4 +18,7 @@ export const darkTheme = {
   bgColor: "#000",
   facebookColor: "white",
   blue: "#0095f6",
+  formBgColor: "rgba(255, 255, 255, 0.15)",
+  formBorderColor: "rgba(255, 255, 255, 0.15)",
+  formFontColor: "white",
 };

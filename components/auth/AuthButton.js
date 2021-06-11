@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 const Button = styled.TouchableOpacity`
   background-color: #0095f6;
-  padding: 15px 10px;
+  padding: 12px 10px;
   border-radius: 5px;
   width: 100%;
   opacity: ${(props) => (props.disabled ? "0.5" : "1")};

@@ -6,9 +6,8 @@ import React, { useState } from "react";
 import { LoggedOutNav } from "./navigators/LoggedOutNav";
 import { NavigationContainer } from "@react-navigation/native";
 import { AppearanceProvider } from "react-native-appearance";
-import { ThemeProvider } from "styled-components";
-
 import { darkTheme, lightTheme, theme } from "./styles";
+import { ThemeProvider } from "styled-components/native";
 
 export default function App() {
   // AppLoading part
