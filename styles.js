@@ -4,7 +4,7 @@ export const theme = Appearance.getColorScheme(); // 현재 기기의 theme
 
 export const lightTheme = {
   accent: "#0095f6",
-  fontColor: "black",
+  fontColor: "white",
   bgColor: "#fff",
   facebookColor: "#385285",
   blue: "#0095f6",

@@ -25,7 +25,7 @@ export const LoggedOutNav = () => {
         options={{
           headerTitle: false,
           headerTransparent: true,
-          headerTintColor: "white",
+          headerTintColor: "#0095f6",
         }}
         name="CreateAccount"
         component={CreateAccount}

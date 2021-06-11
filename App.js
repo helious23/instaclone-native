@@ -35,12 +35,12 @@ export default function App() {
   }
 
   return (
-    <AppearanceProvider>
-      <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+      <AppearanceProvider>
         <NavigationContainer>
           <LoggedOutNav />
         </NavigationContainer>
-      </ThemeProvider>
-    </AppearanceProvider>
+      </AppearanceProvider>
+    </ThemeProvider>
   );
 }
