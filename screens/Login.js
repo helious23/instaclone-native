@@ -8,6 +8,7 @@ import { theme } from "../styles";
 import { gql } from "@apollo/client";
 import { useMutation } from "@apollo/client";
 import { isLoggedInVar } from "../apollo";
+import Notification from "../components/auth/Notification";
 
 const LOGIN_MUTATION = gql`
   mutation login($username: String!, $password: String!) {
@@ -19,7 +20,7 @@ const LOGIN_MUTATION = gql`
   }
 `;
 
-export const Login = () => {
+export const Login = ({ route: { params } }) => {
   const {
     register,
     handleSubmit,
@@ -30,6 +31,10 @@ export const Login = () => {
     setError,
   } = useForm({
     mode: "onChange",
+    defaultValues: {
+      username: params?.username,
+      password: params?.password,
+    },
   });
   const passwordRef = useRef();
 
@@ -86,7 +91,9 @@ export const Login = () => {
 
   return (
     <AuthLayout>
+      <Notification message={params?.message} />
       <TextInput
+        value={watch("username")}
         autoCapitalize={"none"}
         onFocus={() => clearErrors("username")}
         onChange={clearLoginError}
@@ -101,6 +108,7 @@ export const Login = () => {
       />
       <FormError message={formState?.errors?.username?.message} />
       <TextInput
+        value={watch("password")}
         ref={passwordRef}
         onFocus={() => clearErrors("password")}
         onChange={clearLoginError}

@@ -27,11 +27,19 @@ const CREATE_ACCOUNT_MUTATION = gql`
     }
   }
 `;
-export const CreateAccount = () => {
-  const { register, handleSubmit, formState, setValue, clearErrors, watch } =
-    useForm({
-      mode: "onChange",
-    });
+export const CreateAccount = ({ navigation }) => {
+  const {
+    register,
+    handleSubmit,
+    formState,
+    setValue,
+    clearErrors,
+    watch,
+    setError,
+    getValues,
+  } = useForm({
+    mode: "onChange",
+  });
 
   // -------------------------------------- GraphQL -------------------------------------- //
 
@@ -44,6 +52,13 @@ export const CreateAccount = () => {
         message: error,
       });
     }
+    const { username, password } = getValues();
+
+    navigation.navigate("Login", {
+      username,
+      password,
+      message: "Account created. Plaese log in.",
+    });
   };
   const [createAccount, { loading }] = useMutation(CREATE_ACCOUNT_MUTATION, {
     onCompleted,
@@ -94,10 +109,17 @@ export const CreateAccount = () => {
     });
   }, [register]);
 
+  const clearCreateError = () => {
+    if (formState.errors.result) {
+      clearErrors("result");
+    }
+  };
+
   return (
     <AuthLayout>
       <TextInput
-        onChange={() => clearErrors("firstName")}
+        onFocus={() => clearErrors("firstName")}
+        onChange={clearCreateError}
         placeholder="First Name"
         placeholderTextColor={
           theme === "dark" ? "rgba(255, 255, 255, 0.8)" : "gray"
@@ -109,7 +131,8 @@ export const CreateAccount = () => {
       />
       <FormError message={formState?.errors?.firstName?.message} />
       <TextInput
-        onChange={() => clearErrors("lastName")}
+        onFocus={() => clearErrors("lastName")}
+        onChange={clearCreateError}
         ref={lastNameRef}
         placeholder="Last Name"
         placeholderTextColor={
@@ -122,8 +145,10 @@ export const CreateAccount = () => {
       />
       <FormError message={formState?.errors?.lastName?.message} />
       <TextInput
-        onChange={() => clearErrors("username")}
+        onFocus={() => clearErrors("username")}
+        onChange={clearCreateError}
         autoCapitalize={"none"}
+        autoCorrect={false}
         ref={usernameRef}
         placeholder="Username"
         placeholderTextColor={
@@ -136,7 +161,8 @@ export const CreateAccount = () => {
       />
       <FormError message={formState?.errors?.username?.message} />
       <TextInput
-        onChange={() => clearErrors("email")}
+        onFocus={() => clearErrors("email")}
+        onChange={clearCreateError}
         autoCapitalize={"none"}
         ref={emailRef}
         placeholder="Email"
@@ -152,6 +178,7 @@ export const CreateAccount = () => {
       <FormError message={formState?.errors?.email?.message} />
       <TextInput
         onFocus={() => clearErrors("password")}
+        onChange={clearCreateError}
         autoCapitalize={"none"}
         ref={passwordRef}
         placeholder="Password"
@@ -172,6 +199,7 @@ export const CreateAccount = () => {
         disabled={!watch("username") || !watch("password")}
         onPress={handleSubmit(onValid)}
       />
+      <FormError message={formState?.errors?.result?.message} />
     </AuthLayout>
   );
 };
