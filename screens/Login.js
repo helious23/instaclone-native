@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form";
 import { AuthButton } from "../components/auth/AuthButton";
 import { AuthLayout } from "../components/auth/AuthLayout";
 import { TextInput } from "../components/auth/AuthShared";
+import FormError from "../components/auth/FormError";
 import { theme } from "../styles";
 
 export const Login = () => {
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, formState, setValue, clearErrors } =
+    useForm();
   const passwordRef = useRef();
   const onNext = (nextOne) => {
     nextOne?.current?.focus();
@@ -17,13 +19,22 @@ export const Login = () => {
   };
 
   useEffect(() => {
-    register("username");
-    register("password");
+    register("username", {
+      required: "Username is required",
+    });
+    register("password", {
+      required: "Password is required",
+      minLength: {
+        value: 6,
+        message: "Password should be longer than 6 Char.",
+      },
+    });
   }, [register]);
 
   return (
     <AuthLayout>
       <TextInput
+        onFocus={() => clearErrors("username")}
         autoCapitalize={"none"}
         placeholder="Username"
         placeholderTextColor={
@@ -32,9 +43,12 @@ export const Login = () => {
         returnKeyType="next"
         onSubmitEditing={() => onNext(passwordRef)}
         onChangeText={(text) => setValue("username", text)}
+        hasError={Boolean(formState?.errors?.username?.message)}
       />
+      <FormError message={formState?.errors?.username?.message} />
       <TextInput
         ref={passwordRef}
+        onFocus={() => clearErrors("password")}
         autoCapitalize={"none"}
         placeholder="Password"
         placeholderTextColor={
@@ -45,7 +59,9 @@ export const Login = () => {
         lastOne={true}
         onSubmitEditing={handleSubmit(onValid)}
         onChangeText={(text) => setValue("password", text)}
+        hasError={Boolean(formState?.errors?.password?.message)}
       />
+      <FormError message={formState?.errors?.password?.message} />
       <AuthButton
         text={"Log in"}
         disabled={false}

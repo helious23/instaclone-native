@@ -8,6 +8,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { AppearanceProvider } from "react-native-appearance";
 import { darkTheme, lightTheme, theme } from "./styles";
 import { ThemeProvider } from "styled-components/native";
+import { ApolloProvider } from "@apollo/client";
+import client from "./apollo";
 
 export default function App() {
   // AppLoading part
@@ -34,12 +36,14 @@ export default function App() {
   }
 
   return (
-    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
-      <AppearanceProvider>
-        <NavigationContainer>
-          <LoggedOutNav />
-        </NavigationContainer>
-      </AppearanceProvider>
-    </ThemeProvider>
+    <ApolloProvider client={client}>
+      <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+        <AppearanceProvider>
+          <NavigationContainer>
+            <LoggedOutNav />
+          </NavigationContainer>
+        </AppearanceProvider>
+      </ThemeProvider>
+    </ApolloProvider>
   );
 }
