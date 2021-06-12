@@ -8,13 +8,15 @@ import { NavigationContainer } from "@react-navigation/native";
 import { AppearanceProvider } from "react-native-appearance";
 import { darkTheme, lightTheme, theme } from "./styles";
 import { ThemeProvider } from "styled-components/native";
-import { ApolloProvider } from "@apollo/client";
-import client from "./apollo";
+import { ApolloProvider, useReactiveVar } from "@apollo/client";
+import client, { isLoggedInVar } from "./apollo";
+import { LoggedInNav } from "./navigators/LoggedInNav";
 
 export default function App() {
   // AppLoading part
   const [loading, setLoading] = useState(true);
   const onFinish = () => setLoading(false); // loading 이 끝나면 실행
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
   const preload = () => {
     const fontsToLoad = [Ionicons.font]; // 사용할 icon.font 파일 로드
     const fontPromises = fontsToLoad.map((font) => Font.loadAsync(font)); // Array 형태의 promise 로 return
@@ -40,7 +42,7 @@ export default function App() {
       <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
         <AppearanceProvider>
           <NavigationContainer>
-            <LoggedOutNav />
+            {isLoggedIn ? <LoggedInNav /> : <LoggedOutNav />}
           </NavigationContainer>
         </AppearanceProvider>
       </ThemeProvider>

@@ -1,3 +1,4 @@
+import { gql, useMutation } from "@apollo/client";
 import React, { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { AuthButton } from "../components/auth/AuthButton";
@@ -6,9 +7,56 @@ import { TextInput } from "../components/auth/AuthShared";
 import FormError from "../components/auth/FormError";
 import { theme } from "../styles";
 
+const CREATE_ACCOUNT_MUTATION = gql`
+  mutation createAccount(
+    $firstName: String!
+    $lastName: String
+    $username: String!
+    $email: String!
+    $password: String!
+  ) {
+    createAccount(
+      firstName: $firstName
+      lastName: $lastName
+      username: $username
+      email: $email
+      password: $password
+    ) {
+      ok
+      error
+    }
+  }
+`;
 export const CreateAccount = () => {
-  const { register, handleSubmit, formState, setValue, clearErrors } =
-    useForm();
+  const { register, handleSubmit, formState, setValue, clearErrors, watch } =
+    useForm({
+      mode: "onChange",
+    });
+
+  // -------------------------------------- GraphQL -------------------------------------- //
+
+  const onCompleted = (data) => {
+    const {
+      createAccount: { ok, error },
+    } = data;
+    if (!ok) {
+      return setError("result", {
+        message: error,
+      });
+    }
+  };
+  const [createAccount, { loading }] = useMutation(CREATE_ACCOUNT_MUTATION, {
+    onCompleted,
+  });
+
+  const onValid = (data) => {
+    if (loading) {
+      return;
+    }
+    createAccount({
+      variables: { ...data },
+    });
+  };
 
   const lastNameRef = useRef();
   const usernameRef = useRef();
@@ -17,9 +65,6 @@ export const CreateAccount = () => {
 
   const onNext = (nextOne) => {
     nextOne?.current?.focus();
-  };
-  const onValid = (data) => {
-    console.log(data);
   };
 
   useEffect(() => {
@@ -52,7 +97,7 @@ export const CreateAccount = () => {
   return (
     <AuthLayout>
       <TextInput
-        onFocus={() => clearErrors("firstName")}
+        onChange={() => clearErrors("firstName")}
         placeholder="First Name"
         placeholderTextColor={
           theme === "dark" ? "rgba(255, 255, 255, 0.8)" : "gray"
@@ -64,7 +109,7 @@ export const CreateAccount = () => {
       />
       <FormError message={formState?.errors?.firstName?.message} />
       <TextInput
-        onFocus={() => clearErrors("lastName")}
+        onChange={() => clearErrors("lastName")}
         ref={lastNameRef}
         placeholder="Last Name"
         placeholderTextColor={
@@ -77,7 +122,7 @@ export const CreateAccount = () => {
       />
       <FormError message={formState?.errors?.lastName?.message} />
       <TextInput
-        onFocus={() => clearErrors("username")}
+        onChange={() => clearErrors("username")}
         autoCapitalize={"none"}
         ref={usernameRef}
         placeholder="Username"
@@ -91,7 +136,7 @@ export const CreateAccount = () => {
       />
       <FormError message={formState?.errors?.username?.message} />
       <TextInput
-        onFocus={() => clearErrors("email")}
+        onChange={() => clearErrors("email")}
         autoCapitalize={"none"}
         ref={emailRef}
         placeholder="Email"
@@ -123,7 +168,8 @@ export const CreateAccount = () => {
       <FormError message={formState?.errors?.password?.message} />
       <AuthButton
         text={"Create Account"}
-        loading
+        loading={loading}
+        disabled={!watch("username") || !watch("password")}
         onPress={handleSubmit(onValid)}
       />
     </AuthLayout>

@@ -31,6 +31,7 @@ export const AuthButton = ({ disabled, onPress, text, loading }) => {
 
 AuthButton.propTypes = {
   loading: PropTypes.bool,
+  disabled: PropTypes.bool.isRequired,
   onPress: PropTypes.func.isRequired,
   text: PropTypes.string.isRequired,
 };

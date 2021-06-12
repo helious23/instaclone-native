@@ -5,17 +5,64 @@ import { AuthLayout } from "../components/auth/AuthLayout";
 import { TextInput } from "../components/auth/AuthShared";
 import FormError from "../components/auth/FormError";
 import { theme } from "../styles";
+import { gql } from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import { isLoggedInVar } from "../apollo";
+
+const LOGIN_MUTATION = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      ok
+      token
+      error
+    }
+  }
+`;
 
 export const Login = () => {
-  const { register, handleSubmit, formState, setValue, clearErrors } =
-    useForm();
+  const {
+    register,
+    handleSubmit,
+    formState,
+    setValue,
+    clearErrors,
+    watch,
+    setError,
+  } = useForm({
+    mode: "onChange",
+  });
   const passwordRef = useRef();
+
+  // -------------------------------------- GraphQL -------------------------------------- //
+
+  const onCompleted = (data) => {
+    const {
+      login: { ok, error, token },
+    } = data;
+    if (!ok) {
+      return setError("result", {
+        message: error,
+      });
+    }
+    isLoggedInVar(true);
+  };
+
+  const [logInMutaion, { loading }] = useMutation(LOGIN_MUTATION, {
+    onCompleted,
+  });
+
   const onNext = (nextOne) => {
     nextOne?.current?.focus();
   };
 
   const onValid = (data) => {
-    console.log(data);
+    if (!loading) {
+      logInMutaion({
+        variables: {
+          ...data,
+        },
+      });
+    }
   };
 
   useEffect(() => {
@@ -31,11 +78,18 @@ export const Login = () => {
     });
   }, [register]);
 
+  const clearLoginError = () => {
+    if (formState.errors.result) {
+      clearErrors("result");
+    }
+  };
+
   return (
     <AuthLayout>
       <TextInput
-        onFocus={() => clearErrors("username")}
         autoCapitalize={"none"}
+        onFocus={() => clearErrors("username")}
+        onChange={clearLoginError}
         placeholder="Username"
         placeholderTextColor={
           theme === "dark" ? "rgba(255, 255, 255, 0.8)" : "gray"
@@ -49,6 +103,7 @@ export const Login = () => {
       <TextInput
         ref={passwordRef}
         onFocus={() => clearErrors("password")}
+        onChange={clearLoginError}
         autoCapitalize={"none"}
         placeholder="Password"
         placeholderTextColor={
@@ -64,9 +119,11 @@ export const Login = () => {
       <FormError message={formState?.errors?.password?.message} />
       <AuthButton
         text={"Log in"}
-        disabled={false}
+        loading={loading}
+        disabled={!watch("username") || !watch("password")}
         onPress={handleSubmit(onValid)}
       />
+      <FormError message={formState?.errors?.result?.message} />
     </AuthLayout>
   );
 };
