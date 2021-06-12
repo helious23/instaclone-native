@@ -7,7 +7,7 @@ import FormError from "../components/auth/FormError";
 import { theme } from "../styles";
 import { gql } from "@apollo/client";
 import { useMutation } from "@apollo/client";
-import { isLoggedInVar } from "../apollo";
+import { isLoggedInVar, logUserIn } from "../apollo";
 import Notification from "../components/auth/Notification";
 
 const LOGIN_MUTATION = gql`
@@ -40,7 +40,7 @@ export const Login = ({ route: { params } }) => {
 
   // -------------------------------------- GraphQL -------------------------------------- //
 
-  const onCompleted = (data) => {
+  const onCompleted = async (data) => {
     const {
       login: { ok, error, token },
     } = data;
@@ -49,7 +49,7 @@ export const Login = ({ route: { params } }) => {
         message: error,
       });
     }
-    isLoggedInVar(true);
+    await logUserIn(token);
   };
 
   const [logInMutaion, { loading }] = useMutation(LOGIN_MUTATION, {
