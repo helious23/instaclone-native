@@ -10,7 +10,9 @@ export const lightTheme = {
   blue: "#0095f6",
   formBgColor: "white",
   formBorderColor: "lightgray",
-  formFontColor: "black",
+  formFontColor: "#000",
+  tabBarColor: "white",
+  tabBarFontColor: "#000",
 };
 export const darkTheme = {
   accent: "gray",
@@ -20,5 +22,7 @@ export const darkTheme = {
   blue: "#0095f6",
   formBgColor: "rgba(255, 255, 255, 0.15)",
   formBorderColor: "rgba(255, 255, 255, 0.15)",
-  formFontColor: "white",
+  formFontColor: "#fff",
+  tabBarColor: "black",
+  tabBarFontColor: "#fff",
 };

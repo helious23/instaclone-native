@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Welcome } from "../screens/Welcome";
 import { Login } from "../screens/Login";
 import { CreateAccount } from "../screens/CreateAccount";
+import { theme } from "../styles";
 
 const Stack = createStackNavigator();
 
@@ -13,7 +14,7 @@ export const LoggedOutNav = () => {
         headerBackTitleVisible: false,
         headerTitle: false,
         headerTransparent: true,
-        headerTintColor: "#0095f6",
+        headerTintColor: theme === "dark" ? "white" : "black",
       }}
     >
       <Stack.Screen

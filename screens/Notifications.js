@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import { logUserOut } from "../apollo";
 import { theme } from "../styles";
 
-export const Feed = () => {
+export const Notifications = () => {
   return (
     <View
       style={{
@@ -14,7 +14,9 @@ export const Feed = () => {
         justifyContent: "center",
       }}
     >
-      <Text style={{ color: theme === "dark" ? "white" : "black" }}>Feed</Text>
+      <Text style={{ color: theme === "dark" ? "white" : "black" }}>
+        Notifications
+      </Text>
       <TouchableOpacity onPress={() => logUserOut()}>
         <Text
           style={{

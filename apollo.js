@@ -5,13 +5,16 @@ export const isLoggedInVar = makeVar(false);
 export const tokenVar = makeVar("");
 
 export const logUserIn = async (token) => {
-  await AsyncStorage.setItem("token", JSON.stringify(token));
+  await AsyncStorage.multiSet([
+    ["token", token],
+    ["loggedIn", "yes"],
+  ]);
   isLoggedInVar(true);
   tokenVar(token);
 };
 
 export const logUserOut = async () => {
-  await AsyncStorage.removeItem("token");
+  await AsyncStorage.multiRemove(["token", "loggedIn"]);
   isLoggedInVar(false);
 };
 
