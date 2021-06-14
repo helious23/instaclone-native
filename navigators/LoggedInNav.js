@@ -1,13 +1,9 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Feed } from "../screens/Feed";
-import { Search } from "../screens/Search";
-import { Notifications } from "../screens/Notifications";
-import { Me } from "../screens/Me";
 import { theme } from "../styles";
 import { View } from "react-native";
 import { TabIcon } from "../components/nav/TabIcon";
-import { StackNavFactory } from "../components/nav/StackNavFactory";
+import { StackNavFactory } from "./StackNavFactory";
 
 const Tabs = createBottomTabNavigator();
 
@@ -48,14 +44,13 @@ export const LoggedInNav = () => {
       </Tabs.Screen>
       <Tabs.Screen
         name="Camera"
+        component={View}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <TabIcon iconName={"camera"} color={color} focused={focused} />
           ),
         }}
-      >
-        {() => <StackNavFactory screenName={View} />}
-      </Tabs.Screen>
+      ></Tabs.Screen>
       <Tabs.Screen
         name="Notifications"
         options={{

@@ -1,10 +1,8 @@
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import styled from "styled-components/native";
-import { logUserOut } from "../apollo";
 import { theme } from "../styles";
 
-export const Feed = () => {
+export const Feed = ({ navigation }) => {
   return (
     <View
       style={{
@@ -14,16 +12,9 @@ export const Feed = () => {
         justifyContent: "center",
       }}
     >
-      <Text style={{ color: theme === "dark" ? "white" : "black" }}>Feed</Text>
-      <TouchableOpacity onPress={() => logUserOut()}>
-        <Text
-          style={{
-            color: theme === "dark" ? "white" : "black",
-            justifyContent: "center",
-            alignContent: "center",
-          }}
-        >
-          logOut
+      <TouchableOpacity onPress={() => navigation.navigate("Photo")}>
+        <Text style={{ color: theme === "dark" ? "white" : "black" }}>
+          Photo
         </Text>
       </TouchableOpacity>
     </View>
