@@ -15,7 +15,7 @@ export const Profile = () => {
       }}
     >
       <Text style={{ color: theme === "dark" ? "white" : "black" }}>
-        Profile
+        Someone's Profile
       </Text>
       <TouchableOpacity onPress={() => logUserOut()}>
         <Text

@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import { logUserOut } from "../apollo";
 import { theme } from "../styles";
 
-export const Search = ({ navigation }) => {
+export const Photo = ({ navigation }) => {
   return (
     <View
       style={{
@@ -14,9 +14,9 @@ export const Search = ({ navigation }) => {
         justifyContent: "center",
       }}
     >
-      <TouchableOpacity onPress={() => navigation.navigate("Photo")}>
+      <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
         <Text style={{ color: theme === "dark" ? "white" : "black" }}>
-          Photo
+          Profile
         </Text>
       </TouchableOpacity>
     </View>
