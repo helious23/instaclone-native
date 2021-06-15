@@ -1,16 +1,9 @@
 import { gql, useQuery } from "@apollo/client";
 import React from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import Photo from "../components/Photos";
+import { FlatList } from "react-native";
+import Photo from "../components/Photo";
 import { ScreenLayout } from "../components/ScreenLayout";
 import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from "../fragments";
-import { theme } from "../styles";
 
 const FEED_QUERY = gql`
   query seeFeed {

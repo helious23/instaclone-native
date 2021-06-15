@@ -1,37 +1,68 @@
 import React from "react";
 import styled from "styled-components/native";
 import PropTypes from "prop-types";
-import { useWindowDimensions } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Image, TouchableOpacity, useWindowDimensions } from "react-native";
+import { useEffect } from "react";
+import { useState } from "react";
 
 const Container = styled.View``;
-const Header = styled.View``;
-const UserAvatar = styled.Image``;
+
+const Header = styled.TouchableOpacity`
+  padding: 10px 10px;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const UserAvatar = styled.Image`
+  margin-right: 10px;
+  width: 25px;
+  height: 25px;
+  border-radius: 12.5px;
+  border-width: 1px;
+  border-color: ${(props) => props.theme.formBorderColor};
+`;
+
 const Username = styled.Text`
   color: ${(props) => props.theme.fontColor};
+  font-weight: 600;
 `;
+
 const File = styled.Image``;
 const Actions = styled.View``;
 const Action = styled.TouchableOpacity``;
 const Caption = styled.View``;
+
 const CaptionText = styled.Text`
   color: ${(props) => props.theme.fontColor};
 `;
+
 const Likes = styled.Text`
   color: ${(props) => props.theme.fontColor};
 `;
 
 const Photo = ({ id, user, file, isLiked, likes, caption }) => {
-  const { width, height } = useWindowDimensions();
+  const navigation = useNavigation();
+  const { width, height } = useWindowDimensions(); // window의 너비 높이
+  const [imageHeight, setImageHeight] = useState(height - 450);
+  useEffect(() => {
+    Image.getSize(file, (width, height) => {
+      setImageHeight(height / 10); // 추후 조절 필요
+    });
+  }, [file]);
+
   return (
     <Container>
-      <Header>
-        <UserAvatar />
+      <Header onPress={() => navigation.navigate("Profile")}>
+        <UserAvatar resizeMode="cover" source={{ uri: user.avatar }} />
         <Username>{user.username}</Username>
       </Header>
       <File
+        resizeMode="contain"
         style={{
+          // width, height 필수값
           width,
-          height: height - 500,
+          height: imageHeight,
         }}
         source={{ uri: file }}
       />
@@ -41,7 +72,9 @@ const Photo = ({ id, user, file, isLiked, likes, caption }) => {
       </Actions>
       <Likes>{likes === 1 ? "1 like" : `${likes} likes`}</Likes>
       <Caption>
-        <Username>{user.username}</Username>
+        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+          <Username>{user.username}</Username>
+        </TouchableOpacity>
         <CaptionText>{caption}</CaptionText>
       </Caption>
     </Container>
