@@ -7,9 +7,18 @@ import { Search } from "../screens/Search";
 import { Notifications } from "../screens/Notifications";
 import { Me } from "../screens/Me";
 import { theme } from "../styles";
-import { Image } from "react-native";
+import styled from "styled-components/native";
 
 const Stack = createStackNavigator();
+
+const Logo = styled.Image`
+  width: 200px;
+  height: 80px;
+  max-width: 80%;
+  max-height: 80%;
+  margin: 20px auto;
+  margin-bottom: 20px;
+`;
 
 export const StackNavFactory = ({ screenName }) => {
   return (
@@ -33,10 +42,7 @@ export const StackNavFactory = ({ screenName }) => {
           component={Feed}
           options={{
             headerTitle: () => (
-              <Image
-                style={{
-                  maxHeight: 30,
-                }}
+              <Logo
                 resizeMode="contain"
                 source={
                   theme === "dark"
