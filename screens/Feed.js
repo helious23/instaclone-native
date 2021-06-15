@@ -44,7 +44,7 @@ export const Feed = () => {
   return (
     <ScreenLayout loading={loading}>
       <FlatList
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={0.5}
         onEndReached={() =>
           fetchMore({
             variables: {

@@ -7,6 +7,7 @@ import { Image, TouchableOpacity, useWindowDimensions } from "react-native";
 import { useEffect } from "react";
 import { useState } from "react";
 import { theme } from "../styles";
+import { gql, useMutation } from "@apollo/client";
 
 const Container = styled.View``;
 
@@ -60,7 +61,48 @@ const CaptionText = styled.Text`
   color: ${(props) => props.theme.fontColor};
 `;
 
+const TOGGLE_LIKE_MUTATION = gql`
+  mutation toggleLike($id: Int!) {
+    toggleLike(id: $id) {
+      ok
+      error
+    }
+  }
+`;
+
 const Photo = ({ id, user, file, isLiked, likes, caption }) => {
+  const updateToggleLike = (cache, result) => {
+    const {
+      data: {
+        toggleLike: { ok },
+      },
+    } = result;
+    if (ok) {
+      const photoId = `Photo:${id}`;
+      cache.modify({
+        id: photoId,
+        fields: {
+          isLiked(prev) {
+            return !prev;
+          },
+          likes(prev) {
+            if (isLiked) {
+              return prev - 1;
+            }
+            return prev + 1;
+          },
+        },
+      });
+    }
+  };
+
+  const [toggleLikeMutation] = useMutation(TOGGLE_LIKE_MUTATION, {
+    variables: {
+      id,
+    },
+    update: updateToggleLike, // cache data 를 직접 수정
+  });
+
   const navigation = useNavigation();
   const { width, height } = useWindowDimensions(); // window의 너비 높이
   const [imageHeight, setImageHeight] = useState(height - 450);
@@ -87,7 +129,7 @@ const Photo = ({ id, user, file, isLiked, likes, caption }) => {
       />
       <ActionContainer>
         <Actions>
-          <Action>
+          <Action onPress={toggleLikeMutation}>
             <Ionicons
               name={isLiked ? "heart" : "heart-outline"}
               color={isLiked ? "tomato" : theme === "dark" ? "#fff" : "#000"}
