@@ -45,7 +45,7 @@ const Input = styled.TextInput`
 
 export const Search = ({ navigation }) => {
   const numColumns = 4;
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const { setValue, register, watch, handleSubmit } = useForm();
   const [startQueryFn, { loading, data, called }] = useLazyQuery(SEARCH_PHOTOS);
   const onValid = ({ keyword }) => {
@@ -78,10 +78,16 @@ export const Search = ({ navigation }) => {
     });
   }, []);
   const renderItem = ({ item: photo }) => (
-    <TouchableOpacity>
+    <TouchableOpacity // go to photo component with photoId
+      onPress={() =>
+        navigation.navigate("Photo", {
+          photoId: photo.id,
+        })
+      }
+    >
       <Image
         source={{ uri: photo.file }}
-        style={{ width: width / numColumns, height: 100 }}
+        style={{ width: width / numColumns, height: height / 8 }}
       />
     </TouchableOpacity>
   );
@@ -108,6 +114,8 @@ export const Search = ({ navigation }) => {
             </MessageContainer>
           ) : (
             <FlatList
+              //infinite scrolling
+              //pull to refresh
               numColumns={numColumns}
               data={data?.searchPhotos}
               keyExtractor={(photo) => "" + photo.id}

@@ -3,6 +3,9 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { theme } from "../styles";
 
 export const Comments = () => {
+  /* to do : keyboard avoiding view, dismisskeyboard
+  flatlist, pull to refresh ...
+  */
   return (
     <View
       style={{
@@ -14,7 +17,7 @@ export const Comments = () => {
     >
       <TouchableOpacity onPress={() => navigation.navigate("Photo")}>
         <Text style={{ color: theme === "dark" ? "white" : "black" }}>
-          Photo
+          Comments
         </Text>
       </TouchableOpacity>
     </View>

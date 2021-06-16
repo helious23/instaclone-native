@@ -1,24 +1,56 @@
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import styled from "styled-components/native";
-import { logUserOut } from "../apollo";
+import { gql, useQuery } from "@apollo/client";
+import { RefreshControl, ScrollView, View } from "react-native";
+import Photo from "../components/Photo";
+import { ScreenLayout } from "../components/ScreenLayout";
+import { PHOTO_FRAGMENT } from "../fragments";
 import { theme } from "../styles";
+import { useState } from "react";
 
-export const Photo = ({ navigation }) => {
+const SEE_PHOTO = gql`
+  query seePhoto($id: Int!) {
+    seePhoto(id: $id) {
+      ...PhotoFragment
+      user {
+        id
+        username
+        avatar
+      }
+      caption
+    }
+  }
+  ${PHOTO_FRAGMENT}
+`;
+
+export default function PhotoScreen({ route }) {
+  const { data, loading, refetch } = useQuery(SEE_PHOTO, {
+    variables: {
+      id: route?.params?.photoId,
+    },
+  });
+  const [refreshing, setRefreshing] = useState();
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+
   return (
-    <View
-      style={{
-        backgroundColor: theme === "dark" ? "black" : "white",
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-        <Text style={{ color: theme === "dark" ? "white" : "black" }}>
-          Profile
-        </Text>
-      </TouchableOpacity>
-    </View>
+    <ScreenLayout loading={loading}>
+      <ScrollView
+        refreshControl={
+          // scrollview 에서 pull to refresh 는 RefreshControl comp 필요함
+          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+        }
+        style={{ backgroundColor: theme === "dark" ? "black" : "white" }}
+        contentContainerStyle={{
+          backgroundColor: theme === "dark" ? "black" : "white",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Photo {...data?.seePhoto} />
+      </ScrollView>
+    </ScreenLayout>
   );
-};
+}
