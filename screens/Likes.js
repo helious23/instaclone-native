@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, View } from "react-native";
 import { gql, useQuery } from "@apollo/client";
 import { ScreenLayout } from "../components/ScreenLayout";
 import { USER_FRAGMENT } from "../fragments";
@@ -31,6 +31,15 @@ export const Likes = ({ route }) => {
   return (
     <ScreenLayout loading={loading}>
       <FlatList
+        ItemSeparatorComponent={() => (
+          <View
+            style={{
+              width: "100%",
+              height: 1,
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+            }}
+          ></View>
+        )}
         refreshing={refreshing}
         onRefresh={onRefresh}
         data={data?.seePhotoLikes}

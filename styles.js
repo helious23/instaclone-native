@@ -13,16 +13,18 @@ export const lightTheme = {
   formFontColor: "#000",
   tabBarColor: "white",
   tabBarFontColor: "#000",
+  btnColor: "#0095f6",
 };
 export const darkTheme = {
   accent: "gray",
   fontColor: "#fff",
   bgColor: "#000",
-  facebookColor: "white",
+  facebookColor: "#385285",
   blue: "#0095f6",
   formBgColor: "rgba(255, 255, 255, 0.15)",
   formBorderColor: "rgba(255, 255, 255, 0.15)",
   formFontColor: "#fff",
   tabBarColor: "black",
   tabBarFontColor: "#fff",
+  btnColor: "#0095f6",
 };
