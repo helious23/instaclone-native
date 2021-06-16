@@ -10,7 +10,6 @@ const Tabs = createBottomTabNavigator();
 
 export const LoggedInNav = () => {
   const { data } = useMe();
-  console.log(data);
   return (
     <Tabs.Navigator
       tabBarOptions={{

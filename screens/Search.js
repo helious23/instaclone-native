@@ -1,8 +1,7 @@
-import React from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useEffect } from "react";
+import { ActivityIndicator, TextInput, View } from "react-native";
 import { theme } from "../styles";
 import styled from "styled-components/native";
-import { useEffect } from "react";
 import DismissKeyboard from "../components/DismissKeyboard";
 import { useForm } from "react-hook-form";
 import { gql } from "@apollo/client/core";
@@ -11,17 +10,38 @@ import { useLazyQuery } from "@apollo/client";
 const SEARCH_PHOTOS = gql`
   query searchPhotos($keyword: String!) {
     searchPhotos(keyword: $keyword) {
-      id
-      file
+      photos {
+        id
+        file
+      }
     }
   }
+`;
+
+const MessageContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+`;
+const MessageText = styled.Text`
+  margin-top: 15px;
+  color: ${(props) => props.theme.fontColor};
+  font-weight: 600;
 `;
 
 const Input = styled.TextInput``;
 
 export const Search = ({ navigation }) => {
-  const { setValue, register, watch } = useForm();
-  const [startQueryFn, { loading, data }] = useLazyQuery(SEARCH_PHOTOS);
+  const { setValue, register, watch, handleSubmit } = useForm();
+  const [startQueryFn, { loading, data, called }] = useLazyQuery(SEARCH_PHOTOS);
+  const onValid = ({ keyword }) => {
+    startQueryFn({
+      variables: {
+        keyword,
+      },
+    });
+  };
+  console.log(data);
   const SearchBox = () => (
     <TextInput
       style={{
@@ -35,30 +55,40 @@ export const Search = ({ navigation }) => {
       returnKeyType="search"
       autoCorrect={false}
       onChangeText={(text) => setValue("keyword", text)}
+      onSubmitEditing={handleSubmit(onValid)}
     />
   );
   useEffect(() => {
     navigation.setOptions({
       headerTitle: SearchBox,
     });
-    register("keyword");
+    register("keyword", {
+      required: true,
+      minLength: 2,
+    });
   }, []);
-  console.log(watch());
   return (
     <DismissKeyboard>
       <View
-        style={{
-          backgroundColor: theme === "dark" ? "black" : "white",
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        style={{ flex: 1, backgroundColor: theme === "dark" ? "#000" : "#fff" }}
       >
-        <TouchableOpacity onPress={() => navigation.navigate("Photo")}>
-          <Text style={{ color: theme === "dark" ? "white" : "black" }}>
-            Photo
-          </Text>
-        </TouchableOpacity>
+        {loading ? (
+          <MessageContainer>
+            <ActivityIndicator size="large" />
+            <MessageText>Searching...</MessageText>
+          </MessageContainer>
+        ) : null}
+        {!called ? (
+          <MessageContainer>
+            <MessageText>Search by keyword</MessageText>
+          </MessageContainer>
+        ) : null}
+        {data?.searchPhotos?.photos !== undefined &&
+        data?.searchPhotos?.photos?.length === 0 ? (
+          <MessageContainer>
+            <MessageText>Could not find anything</MessageText>
+          </MessageContainer>
+        ) : null}
       </View>
     </DismissKeyboard>
   );
