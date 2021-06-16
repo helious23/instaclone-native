@@ -1,8 +1,17 @@
 import React from "react";
+import { useEffect } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import Logout from "../components/Logout";
+import useMe from "../hooks/useMe";
 import { theme } from "../styles";
 
 export const Me = ({ navigation }) => {
+  const { data } = useMe();
+  useEffect(() => {
+    navigation.setOptions({
+      title: data?.me?.username,
+    });
+  }, []);
   return (
     <View
       style={{
@@ -12,11 +21,7 @@ export const Me = ({ navigation }) => {
         justifyContent: "center",
       }}
     >
-      <TouchableOpacity onPress={() => navigation.navigate("Photo")}>
-        <Text style={{ color: theme === "dark" ? "white" : "black" }}>
-          Photo
-        </Text>
-      </TouchableOpacity>
+      <Logout></Logout>
     </View>
   );
 };
