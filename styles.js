@@ -8,12 +8,14 @@ export const lightTheme = {
   bgColor: "#fff",
   facebookColor: "#385285",
   blue: "#0095f6",
-  formBgColor: "white",
-  formBorderColor: "lightgray",
+  formBgColor: "rgba(0, 0, 0, 0.15)",
+  formBorderColor: "rgba(0, 0, 0, 0.15)",
   formFontColor: "#000",
   tabBarColor: "white",
   tabBarFontColor: "#000",
   btnColor: "#0095f6",
+  searchFormBorderColor: "rgba(0, 0, 0, 0.2)",
+  searchFontColor: "#000",
 };
 export const darkTheme = {
   accent: "gray",
@@ -27,4 +29,6 @@ export const darkTheme = {
   tabBarColor: "black",
   tabBarFontColor: "#fff",
   btnColor: "#0095f6",
+  searchFormBorderColor: "rgba(255, 255, 255, 0.7)",
+  searchFontColor: "#000",
 };
