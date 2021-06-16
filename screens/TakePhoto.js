@@ -1,12 +1,10 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-const Upload = () => {
+export default function TakePhoto() {
   return (
     <View>
-      <Text>Upload</Text>
+      <Text>TakePhoto</Text>
     </View>
   );
-};
-
-export default Upload;
+}
