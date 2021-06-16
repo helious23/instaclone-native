@@ -1,9 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import styled from "styled-components/native";
-import { logUserOut } from "../apollo";
-import Logout from "../components/Logout";
+import { Text, View } from "react-native";
 import { theme } from "../styles";
 
 export const Profile = ({ navigation, route }) => {
