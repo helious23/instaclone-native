@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import DismissKeyboard from "../components/DismissKeyboard";
 import { useForm } from "react-hook-form";
 import { gql } from "@apollo/client/core";
+import { useLazyQuery } from "@apollo/client";
 
 const SEARCH_PHOTOS = gql`
   query searchPhotos($keyword: String!) {
@@ -20,6 +21,7 @@ const Input = styled.TextInput``;
 
 export const Search = ({ navigation }) => {
   const { setValue, register, watch } = useForm();
+  const [startQueryFn, { loading, data }] = useLazyQuery(SEARCH_PHOTOS);
   const SearchBox = () => (
     <TextInput
       style={{
