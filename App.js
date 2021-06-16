@@ -10,7 +10,7 @@ import { darkTheme, lightTheme, theme } from "./styles";
 import { ThemeProvider } from "styled-components/native";
 import { ApolloProvider, useReactiveVar } from "@apollo/client";
 import client, { isLoggedInVar, tokenVar, cache } from "./apollo";
-import { LoggedInNav } from "./navigators/LoggedInNav";
+import LoggedInNav from "./navigators/LoggedInNav";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AsyncStorageWrapper, persistCache } from "apollo3-cache-persist";
 
