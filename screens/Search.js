@@ -5,6 +5,16 @@ import styled from "styled-components/native";
 import { useEffect } from "react";
 import DismissKeyboard from "../components/DismissKeyboard";
 import { useForm } from "react-hook-form";
+import { gql } from "@apollo/client/core";
+
+const SEARCH_PHOTOS = gql`
+  query searchPhotos($keyword: String!) {
+    searchPhotos(keyword: $keyword) {
+      id
+      file
+    }
+  }
+`;
 
 const Input = styled.TextInput``;
 
