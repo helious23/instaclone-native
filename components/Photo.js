@@ -28,7 +28,7 @@ const UserAvatar = styled.Image`
 
 const Username = styled.Text`
   color: ${(props) => props.theme.fontColor};
-  font-weight: 600;
+  font-weight: 700;
 `;
 
 const File = styled.Image``;
