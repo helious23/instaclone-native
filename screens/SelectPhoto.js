@@ -33,7 +33,14 @@ const IconContainer = styled.View`
   right: 0px;
 `;
 
-export default function SelectPhoto() {
+const HeaderRightText = styled.Text`
+  color: ${(props) => props.theme.blue};
+  font-size: 16px;
+  font-weight: 600;
+  margin-right: 10px;
+`;
+
+export default function SelectPhoto({ navigation }) {
   const [ok, setOk] = useState(false);
   const [photos, setPhotos] = useState([]);
   const [chosenPhoto, setChosenPhoto] = useState("");
@@ -55,8 +62,18 @@ export default function SelectPhoto() {
       getPhotos();
     }
   };
+  const HeaderRight = () => (
+    <TouchableOpacity>
+      <HeaderRightText>Next</HeaderRightText>
+    </TouchableOpacity>
+  );
   useEffect(() => {
     getPermissions();
+  }, []);
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: HeaderRight,
+    });
   }, []);
   const numColumns = 4;
   const { width } = useWindowDimensions();
@@ -71,7 +88,11 @@ export default function SelectPhoto() {
         style={{ width: width / numColumns, height: 100 }}
       />
       <IconContainer>
-        <Ionicons name="checkmark-circle" size={18} color="white" />
+        <Ionicons
+          name="checkmark-circle"
+          size={18}
+          color={photo.uri === chosenPhoto ? "#0095f6" : "white"}
+        />
       </IconContainer>
     </ImageContainer>
   );
