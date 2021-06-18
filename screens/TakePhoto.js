@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 import { Camera } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
-import { Image, Text, TouchableOpacity } from "react-native";
+import { Alert, Image, Text, TouchableOpacity } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as MediaLibrary from "expo-media-library";
 
@@ -44,9 +44,13 @@ const CloseBtn = styled.TouchableOpacity`
   left: 20px;
 `;
 
+const PhotoActions = styled(Actions)`
+  flex-direction: row;
+`;
+
 const PhotoAction = styled.TouchableOpacity`
   background-color: white;
-  padding: 5px 10px;
+  padding: 5px 25px;
   border-radius: 5px;
 `;
 const PhotoActionText = styled.Text`
@@ -87,7 +91,25 @@ export default function TakePhoto({ navigation }) {
       setFlashMode(Camera.Constants.FlashMode.off);
     }
   };
-
+  const goToUpload = async (save) => {
+    if (save) {
+      await MediaLibrary.saveToLibraryAsync(takenPhoto);
+    }
+    console.log("Will upload", takenPhoto);
+  };
+  const onUpload = () => {
+    Alert.alert("Save photo?", "Save photo & upload or just upload", [
+      {
+        text: "Save & Upload",
+        onPress: () => goToUpload(true),
+      },
+      {
+        text: "Just Upload",
+        // style: "destructive", // ios only
+        onPress: () => goToUpload(false),
+      },
+    ]);
+  };
   const onCameraReady = () => setCameraReady(true);
   const takePhoto = async () => {
     if (camera.current && cameraReady) {
@@ -96,7 +118,6 @@ export default function TakePhoto({ navigation }) {
         exif: true,
       });
       setTakenPhoto(uri);
-      // const assets = await MediaLibrary.createAssetAsync(uri);
     }
   };
   const onDismiss = () => setTakenPhoto("");
@@ -126,6 +147,7 @@ export default function TakePhoto({ navigation }) {
           <SliderContainer>
             <Slider
               style={{ width: 200, height: 40 }}
+              value={zoom}
               minimumValue={0}
               maximumValue={0.5}
               minimumTrackTintColor="#FFFFFF"
@@ -160,17 +182,14 @@ export default function TakePhoto({ navigation }) {
           </ButtonsContainer>
         </Actions>
       ) : (
-        <Actions>
+        <PhotoActions>
           <PhotoAction onPress={onDismiss}>
             <PhotoActionText>Dismiss</PhotoActionText>
           </PhotoAction>
-          <PhotoAction>
+          <PhotoAction onPress={onUpload}>
             <PhotoActionText>Upload</PhotoActionText>
           </PhotoAction>
-          <PhotoAction>
-            <PhotoActionText>Save & Upload</PhotoActionText>
-          </PhotoAction>
-        </Actions>
+        </PhotoActions>
       )}
     </Container>
   );
