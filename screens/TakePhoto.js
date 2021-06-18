@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components/native";
 import { Camera } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
@@ -44,6 +44,8 @@ const CloseBtn = styled.TouchableOpacity`
 `;
 
 export default function TakePhoto({ navigation }) {
+  const camera = useRef();
+  const [cameraReady, setCameraReady] = useState(false);
   const [ok, setOk] = useState(false);
   const [flashMode, setFlashMode] = useState(Camera.Constants.FlashMode.off);
   const [zoom, setZoom] = useState(0);
@@ -74,6 +76,18 @@ export default function TakePhoto({ navigation }) {
       setFlashMode(Camera.Constants.FlashMode.off);
     }
   };
+
+  const onCameraReady = () => setCameraReady(true);
+  const takePhoto = async () => {
+    if (camera.current && cameraReady) {
+      const photo = await camera.current.takePictureAsync({
+        quality: 1,
+        exif: true,
+      });
+      console.log(photo);
+    }
+  };
+
   // 요청 거부시 재 요청 묻는 component 나 button
   return (
     <Container>
@@ -83,6 +97,8 @@ export default function TakePhoto({ navigation }) {
         style={{ flex: 1 }}
         zoom={zoom}
         flashMode={flashMode}
+        ref={camera}
+        onCameraReady={onCameraReady}
       >
         <CloseBtn onPress={() => navigation.navigate("Tabs")}>
           <Ionicons name="close" size={30} color="white" />
@@ -115,7 +131,7 @@ export default function TakePhoto({ navigation }) {
               }
             />
           </TouchableOpacity>
-          <TakePhotoBtn />
+          <TakePhotoBtn onPress={takePhoto} />
           <CameraChangeBtn onPress={onCameraSwtich}>
             <Ionicons
               color="#fff"
