@@ -16,8 +16,8 @@ export const lightTheme = {
   btnColor: "#0095f6",
   searchFormBorderColor: "rgba(0, 0, 0, 0.2)",
   searchFontColor: "#000",
-  cameraBtnColor: "rgba(0, 0, 0, 0.6)",
-  cameraBtnBorderColor: "rgba(0, 0, 0, 0.8)",
+  cameraBtnColor: "rgba(255, 255, 255, 0.6)",
+  cameraBtnBorderColor: "rgba(255, 255, 255, 0.7)",
 };
 export const darkTheme = {
   accent: "gray",
@@ -34,5 +34,5 @@ export const darkTheme = {
   searchFormBorderColor: "rgba(255, 255, 255, 0.7)",
   searchFontColor: "#000",
   cameraBtnColor: "rgba(255, 255, 255, 0.6)",
-  cameraBtnBorderColor: "rgba(0, 0, 0, 0.8)",
+  cameraBtnBorderColor: "rgba(255, 255, 255, 0.7)",
 };
