@@ -3,6 +3,8 @@ import styled from "styled-components/native";
 import { Camera } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
+import { TouchableOpacity } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
 const Container = styled.View`
   flex: 1;
@@ -35,7 +37,13 @@ const ButtonsContainer = styled.View`
   align-items: center;
 `;
 
-export default function TakePhoto() {
+const CloseBtn = styled.TouchableOpacity`
+  position: absolute;
+  top: 50px;
+  left: 20px;
+`;
+
+export default function TakePhoto({ navigation }) {
   const [ok, setOk] = useState(false);
   const [flashMode, setFlashMode] = useState(Camera.Constants.FlashMode.off);
   const [zoom, setZoom] = useState(0);
@@ -57,11 +65,29 @@ export default function TakePhoto() {
   const onZoomValueChange = (e) => {
     setZoom(e);
   };
-  const onFlashChange = () => {};
+  const onFlashChange = () => {
+    if (flashMode === Camera.Constants.FlashMode.off) {
+      setFlashMode(Camera.Constants.FlashMode.on);
+    } else if (flashMode === Camera.Constants.FlashMode.on) {
+      setFlashMode(Camera.Constants.FlashMode.auto);
+    } else if (flashMode === Camera.Constants.FlashMode.auto) {
+      setFlashMode(Camera.Constants.FlashMode.off);
+    }
+  };
   // 요청 거부시 재 요청 묻는 component 나 button
   return (
     <Container>
-      <Camera type={cameraType} style={{ flex: 1 }} zoom={zoom} />
+      <StatusBar hidden={true} />
+      <Camera
+        type={cameraType}
+        style={{ flex: 1 }}
+        zoom={zoom}
+        flashMode={flashMode}
+      >
+        <CloseBtn onPress={() => navigation.navigate("Tabs")}>
+          <Ionicons name="close" size={30} color="white" />
+        </CloseBtn>
+      </Camera>
       <Actions>
         <SliderContainer>
           <Slider
@@ -74,7 +100,22 @@ export default function TakePhoto() {
           />
         </SliderContainer>
         <ButtonsContainer>
-          <TakePhotoBtn></TakePhotoBtn>
+          <TouchableOpacity onPress={onFlashChange}>
+            <Ionicons
+              size={30}
+              color="#fff"
+              name={
+                flashMode === Camera.Constants.FlashMode.off
+                  ? "flash-off-outline"
+                  : flashMode === Camera.Constants.FlashMode.on
+                  ? "flash"
+                  : flashMode === Camera.Constants.FlashMode.auto
+                  ? "eye"
+                  : ""
+              }
+            />
+          </TouchableOpacity>
+          <TakePhotoBtn />
           <CameraChangeBtn onPress={onCameraSwtich}>
             <Ionicons
               color="#fff"
