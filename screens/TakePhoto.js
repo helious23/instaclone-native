@@ -7,6 +7,7 @@ import { Alert, Image, Text, TouchableOpacity } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as MediaLibrary from "expo-media-library";
 import { useIsFocused } from "@react-navigation/native";
+import { theme } from "../styles";
 
 const Container = styled.View`
   flex: 1;
@@ -139,7 +140,11 @@ export default function TakePhoto({ navigation }) {
           onCameraReady={onCameraReady}
         >
           <CloseBtn onPress={() => navigation.navigate("Tabs")}>
-            <Ionicons name="close" size={30} color="white" />
+            <Ionicons
+              name="close"
+              size={30}
+              color={theme === "dark" ? "#fff" : "#000"}
+            />
           </CloseBtn>
         </Camera>
       ) : (

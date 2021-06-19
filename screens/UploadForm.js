@@ -8,6 +8,7 @@ import { ActivityIndicator, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import DismissKeyboard from "../components/DismissKeyboard";
 import { FEED_PHOTO } from "../fragments";
+import { theme } from "../styles";
 
 const UPLOAD_PHOTO_MUTATION = gql`
   mutation uploadPhoto($file: Upload!, $caption: String) {
@@ -44,10 +45,35 @@ const HeaderRightText = styled.Text`
 `;
 
 export default function UploadForm({ route, navigation }) {
-  const [uploadPhotoMutation, { loading }] = useMutation(UPLOAD_PHOTO_MUTATION);
+  const updateUploadPhoto = (cache, result) => {
+    const {
+      data: { uploadPhoto },
+    } = result;
+    if (uploadPhoto.id) {
+      cache.modify({
+        id: `ROOT_QUERY`,
+        fields: {
+          seeFeed(prev) {
+            return [uploadPhoto, ...prev];
+          },
+        },
+      });
+      navigation.navigate("Tabs");
+    }
+  };
+  const [uploadPhotoMutation, { loading }] = useMutation(
+    UPLOAD_PHOTO_MUTATION,
+    {
+      update: updateUploadPhoto,
+    }
+  );
 
   const HeaderRightLoading = () => (
-    <ActivityIndicator size="small" color="#fff" style={{ marginRight: 10 }} />
+    <ActivityIndicator
+      size="small"
+      color={theme === "dark" ? "#fff" : "#000"}
+      style={{ marginRight: 10 }}
+    />
   );
   const { register, handleSubmit, setValue } = useForm();
   const HeaderRight = () => (
