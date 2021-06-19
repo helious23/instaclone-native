@@ -58,6 +58,7 @@ const Caption = styled.View`
 
 const CaptionText = styled.Text`
   margin-left: 5px;
+  width: 80%;
   color: ${(props) => props.theme.fontColor};
 `;
 

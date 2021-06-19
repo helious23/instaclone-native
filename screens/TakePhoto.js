@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 import { Camera } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
-import { Alert, Image, Text, TouchableOpacity } from "react-native";
+import { Alert, Image, Platform, Text, TouchableOpacity } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as MediaLibrary from "expo-media-library";
 import { useIsFocused } from "@react-navigation/native";
@@ -102,17 +102,25 @@ export default function TakePhoto({ navigation }) {
     });
   };
   const onUpload = () => {
-    Alert.alert("Save photo?", "Save photo & upload or just upload", [
-      {
-        text: "Save & Upload",
-        onPress: () => goToUpload(true),
-      },
-      {
-        text: "Just Upload",
-        // style: "destructive", // ios only
-        onPress: () => goToUpload(false),
-      },
-    ]);
+    if (Platform.OS !== "web") {
+      Alert.alert("Save photo?", "Save photo & upload or just upload", [
+        {
+          text: "Save & Upload",
+          onPress: () => goToUpload(true),
+        },
+        {
+          text: "Just Upload",
+          // style: "destructive", // ios only
+          onPress: () => goToUpload(false),
+        },
+      ]);
+    } else {
+      if (confirm("Upload photo?")) {
+        goToUpload(false);
+      } else {
+        onDismiss();
+      }
+    }
   };
   const onCameraReady = () => setCameraReady(true);
   const takePhoto = async () => {

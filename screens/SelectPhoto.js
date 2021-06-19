@@ -45,10 +45,22 @@ export default function SelectPhoto({ navigation }) {
   const [ok, setOk] = useState(false);
   const [photos, setPhotos] = useState([]);
   const [chosenPhoto, setChosenPhoto] = useState("");
+  const [endCursor, setEndCursor] = useState("");
   const getPhotos = async () => {
-    const { assets: photos } = await MediaLibrary.getAssetsAsync();
+    const { endCursor, assets: photos } = await MediaLibrary.getAssetsAsync({
+      first: 40,
+    });
+    setEndCursor(endCursor);
     setPhotos(photos);
     setChosenPhoto(photos[0]?.uri);
+  };
+  const getMorePhotos = async () => {
+    const { endCursor: newEndCursor, assets: morePhotos } =
+      await MediaLibrary.getAssetsAsync({
+        after: endCursor,
+      });
+    setPhotos(photos.concat(morePhotos));
+    setEndCursor(newEndCursor);
   };
   const getPermissions = async () => {
     const { status, canAskAgain } = await MediaLibrary.getPermissionsAsync();
@@ -116,6 +128,8 @@ export default function SelectPhoto({ navigation }) {
       </Top>
       <Bottom>
         <FlatList
+          onEndReachedThreshold={0.2}
+          onEndReached={() => getMorePhotos()}
           data={photos}
           numColumns={numColumns}
           keyExtractor={(photo) => photo.id}

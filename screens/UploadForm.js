@@ -4,7 +4,7 @@ import { gql } from "@apollo/client/core";
 import React from "react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { ActivityIndicator, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Platform, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import DismissKeyboard from "../components/DismissKeyboard";
 import { FEED_PHOTO } from "../fragments";
@@ -31,8 +31,9 @@ const CaptionContainer = styled.View`
   margin-top: 30px;
 `;
 const Caption = styled.TextInput`
-  background-color: ${(props) => props.theme.fontColor};
-  color: ${(props) => props.theme.bgColor};
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  color: #000;
   padding: 10px 20px;
   border-radius: 100px;
 `;
