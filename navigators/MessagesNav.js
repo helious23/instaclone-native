@@ -11,9 +11,6 @@ export default function MessagesNav() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerBackImage: ({ tintColor }) => (
-          <Ionicons name="chevron-down" color={tintColor} size={28} />
-        ),
         headerBackTitleVisible: false,
         headerTintColor: theme === "dark" ? "#fff" : "#000",
         headerStyle: {
@@ -21,7 +18,15 @@ export default function MessagesNav() {
         },
       }}
     >
-      <Stack.Screen name="Rooms" component={Rooms} />
+      <Stack.Screen
+        name="Rooms"
+        options={{
+          headerBackImage: ({ tintColor }) => (
+            <Ionicons name="chevron-down" color={tintColor} size={30} />
+          ),
+        }}
+        component={Rooms}
+      />
       <Stack.Screen name="Room" component={Room} />
     </Stack.Navigator>
   );
