@@ -55,6 +55,7 @@ export default function SelectPhoto({ navigation }) {
     setChosenPhoto(photos[0]?.uri);
   };
   const getMorePhotos = async () => {
+    // 마지막 사진의 경우는 호출 안되게 수정
     const { endCursor: newEndCursor, assets: morePhotos } =
       await MediaLibrary.getAssetsAsync({
         after: endCursor,
