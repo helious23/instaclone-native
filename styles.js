@@ -18,6 +18,8 @@ export const lightTheme = {
   searchFontColor: "#000",
   cameraBtnColor: "rgba(255, 255, 255, 0.7)",
   cameraBtnBorderColor: "rgb(255, 255, 255)",
+  chatInputColor: "rgba(0, 0, 0, 0.5)",
+  chatBackgroundColor: "rgba(0, 0, 0, 0.2)",
 };
 export const darkTheme = {
   accent: "gray",
@@ -35,4 +37,6 @@ export const darkTheme = {
   searchFontColor: "#000",
   cameraBtnColor: "rgba(255, 255, 255, 0.7)",
   cameraBtnBorderColor: "rgb(255, 255, 255)",
+  chatInputColor: "rgba(255, 255, 255, 0.5)",
+  chatBackgroundColor: "rgba(255, 255, 255, 0.3)",
 };

@@ -19,8 +19,10 @@ const Column = styled.View`
 const Avatar = styled.Image`
   width: 50px;
   height: 50px;
-  border-radius: 15px;
+  border-radius: 25px;
   margin-right: 20px;
+  border-width: 1px;
+  border-color: #fff;
 `;
 const Data = styled.View``;
 const UnreadDot = styled.View`

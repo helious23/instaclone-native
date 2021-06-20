@@ -4,7 +4,12 @@ import { gql } from "@apollo/client/core";
 import React from "react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { ActivityIndicator, Platform, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
 import styled from "styled-components/native";
 import DismissKeyboard from "../components/DismissKeyboard";
 import { FEED_PHOTO } from "../fragments";
@@ -105,19 +110,25 @@ export default function UploadForm({ route, navigation }) {
     });
   };
   return (
-    <DismissKeyboard>
-      <Container>
-        <Photo resizeMode="contain" source={{ uri: route?.params?.file }} />
-        <CaptionContainer>
-          <Caption
-            placeholder="Write a caption..."
-            placeholderTextColor="rgba(0, 0, 0, 0.5)"
-            onChangeText={(text) => setValue("caption", text)}
-            onSubmitEditing={handleSubmit(onValid)}
-            returnKeyType="done"
-          />
-        </CaptionContainer>
-      </Container>
-    </DismissKeyboard>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: theme === "dark" ? "#000" : "#fff" }}
+      behavior="padding"
+      keyboardVerticalOffset={50}
+    >
+      <DismissKeyboard>
+        <Container>
+          <Photo resizeMode="contain" source={{ uri: route?.params?.file }} />
+          <CaptionContainer>
+            <Caption
+              placeholder="Write a caption..."
+              placeholderTextColor="rgba(0, 0, 0, 0.5)"
+              onChangeText={(text) => setValue("caption", text)}
+              onSubmitEditing={handleSubmit(onValid)}
+              returnKeyType="done"
+            />
+          </CaptionContainer>
+        </Container>
+      </DismissKeyboard>
+    </KeyboardAvoidingView>
   );
 }

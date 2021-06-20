@@ -6,6 +6,15 @@ import { ScreenLayout } from "../components/ScreenLayout";
 import styled from "styled-components/native";
 import { theme } from "../styles";
 
+const SEND_MESSAGE_MUTATION = gql`
+  mutation sendMessage($payload: String!, $roomId: Int, $userId: Int) {
+    sendMessage(payload: $payload, roomId: $roomId, userId: $userId) {
+      ok
+      id
+    }
+  }
+`;
+
 const ROOM_QUERY = gql`
   query seeRoom($id: Int!) {
     seeRoom(id: $id) {
@@ -21,20 +30,34 @@ const ROOM_QUERY = gql`
     }
   }
 `;
-const MessageContainer = styled.View``;
-const Author = styled.View``;
-const Avatar = styled.Image``;
-const Username = styled.Text`
-  color: ${(props) => props.theme.fontColor};
+const MessageContainer = styled.View`
+  padding: 0px 10px;
+  flex-direction: ${(props) => (props.outGoing ? "row-reverse" : "row")};
+  align-items: flex-end;
 `;
+const Author = styled.View``;
+const Avatar = styled.Image`
+  height: 20px;
+  width: 20px;
+  border-radius: 12.5px;
+`;
+
 const Message = styled.Text`
   color: ${(props) => props.theme.fontColor};
+  background-color: ${(props) => props.theme.chatBackgroundColor};
+  padding: 5px 10px;
+  overflow: hidden;
+  border-radius: 10px;
+  font-size: 16px;
+  margin: 0px 10px;
 `;
 const TextInput = styled.TextInput`
-  margin-bottom: 100px;
+  margin: 50px 0px;
+  margin-top: 25px;
   width: 95%;
-  background-color: ${(props) => props.theme.fontColor};
+  border: 1px solid ${(props) => props.theme.chatInputColor};
   padding: 10px 20px;
+  color: ${(props) => props.theme.fontColor};
   border-radius: 100px;
 `;
 
@@ -50,10 +73,11 @@ export default function Room({ route, navigation }) {
     });
   }, []);
   const renderItem = ({ item: message }) => (
-    <MessageContainer>
+    <MessageContainer
+      outGoing={message.user.username !== route?.params?.talkingTo?.username}
+    >
       <Author>
         <Avatar source={{ uri: message.user.avatar }} />
-        <Username>{message.user.username}</Username>
       </Author>
       <Message>{message.payload}</Message>
     </MessageContainer>
@@ -61,7 +85,7 @@ export default function Room({ route, navigation }) {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: theme === "dark" ? "#000" : "#fff" }}
-      behavior="height"
+      behavior="padding"
       keyboardVerticalOffset={50}
     >
       <ScreenLayout loading={loading}>
@@ -73,6 +97,9 @@ export default function Room({ route, navigation }) {
           renderItem={renderItem}
         />
         <TextInput
+          placeholderTextColor={
+            theme === "dark" ? "rgba(255, 255, 255, 0.5)" : "rgba(0,0,0,0.5)"
+          }
           placeholder="Write a message..."
           returnKeyLabel="Send Message"
           returnKeyType="send"
