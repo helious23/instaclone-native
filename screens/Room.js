@@ -20,6 +20,7 @@ const SEND_MESSAGE_MUTATION = gql`
 const ROOM_QUERY = gql`
   query seeRoom($id: Int!) {
     seeRoom(id: $id) {
+      id
       messages(lastId: 0) {
         id
         payload
@@ -66,7 +67,7 @@ const TextInput = styled.TextInput`
 // make a room button and send a new message other user
 export default function Room({ route, navigation }) {
   const { data: meData } = useMe();
-  const { register, setValue, handleSubmit, getValues } = useForm();
+  const { register, setValue, handleSubmit, getValues, watch } = useForm();
   const updateSendMessage = (cache, result) => {
     const {
       data: {
@@ -75,6 +76,7 @@ export default function Room({ route, navigation }) {
     } = result;
     if (ok && meData) {
       const { message } = getValues();
+      setValue("message", "");
       const messageObj = {
         id,
         payload: message,
@@ -85,8 +87,8 @@ export default function Room({ route, navigation }) {
         read: true,
         __typename: "Message",
       };
-      const messageFrgment = cache.writeFragment({
-        fragmen: gql`
+      const messageFragment = cache.writeFragment({
+        fragment: gql`
           fragment NewMessage on Message {
             id
             payload
@@ -100,10 +102,10 @@ export default function Room({ route, navigation }) {
         data: messageObj,
       });
       cache.modify({
-        id: `Room:${route?.params?.id}`,
+        id: `Room:${route.params.id}`,
         fields: {
           messages(prev) {
-            return [messageFrgment, ...prev];
+            return [...prev, messageFragment];
           },
         },
       });
@@ -150,27 +152,26 @@ export default function Room({ route, navigation }) {
   );
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: theme === "dark" ? "#000" : "#fff" }}
+      style={{ flex: 1, backgroundColor: "black" }}
       behavior="padding"
       keyboardVerticalOffset={50}
     >
       <ScreenLayout loading={loading}>
         <FlatList
-          style={{ width: "100%", paddingTop: 10 }}
+          style={{ width: "100%", paddingVertical: 10 }}
           ItemSeparatorComponent={() => <View style={{ height: 20 }}></View>}
           data={data?.seeRoom?.messages}
           keyExtractor={(message) => "" + message.id}
           renderItem={renderItem}
         />
         <TextInput
-          placeholderTextColor={
-            theme === "dark" ? "rgba(255, 255, 255, 0.5)" : "rgba(0,0,0,0.5)"
-          }
+          placeholderTextColor="rgba(255, 255, 255, 0.5)"
           placeholder="Write a message..."
           returnKeyLabel="Send Message"
           returnKeyType="send"
           onChangeText={(text) => setValue("message", text)}
           onSubmitEditing={handleSubmit(onValid)}
+          value={watch("message")}
         />
       </ScreenLayout>
     </KeyboardAvoidingView>
