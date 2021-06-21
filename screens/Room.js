@@ -4,9 +4,10 @@ import { useEffect } from "react";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { ScreenLayout } from "../components/ScreenLayout";
 import styled from "styled-components/native";
-import { theme } from "../styles";
 import { useForm } from "react-hook-form";
+import { Ionicons } from "@expo/vector-icons";
 import useMe from "../hooks/useMe";
+import { theme } from "../styles";
 
 const SEND_MESSAGE_MUTATION = gql`
   mutation sendMessage($payload: String!, $roomId: Int, $userId: Int) {
@@ -21,7 +22,7 @@ const ROOM_QUERY = gql`
   query seeRoom($id: Int!) {
     seeRoom(id: $id) {
       id
-      messages(lastId: 0) {
+      messages {
         id
         payload
         user {
@@ -55,14 +56,23 @@ const Message = styled.Text`
   margin: 0px 10px;
 `;
 const TextInput = styled.TextInput`
-  margin: 50px 0px;
-  margin-top: 25px;
-  width: 95%;
   border: 1px solid ${(props) => props.theme.chatInputColor};
   padding: 10px 20px;
   color: ${(props) => props.theme.fontColor};
   border-radius: 100px;
+  width: 90%;
+  margin-right: 10px;
 `;
+
+const InputContainer = styled.View`
+  width: 95%;
+  margin: 50px 0px;
+  margin-top: 25px;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const SendButton = styled.TouchableOpacity``;
 
 // make a room button and send a new message other user
 export default function Room({ route, navigation }) {
@@ -150,29 +160,55 @@ export default function Room({ route, navigation }) {
       <Message>{message.payload}</Message>
     </MessageContainer>
   );
+
+  const messages = [...(data?.seeRoom?.messages ?? [])];
+  messages.reverse();
+
   return (
-    <KeyboardAvoidingView
+    <KeyboardAvoidingView // ios 일때만 적용. component 로 만들어야 될듯
       style={{ flex: 1, backgroundColor: "black" }}
       behavior="padding"
       keyboardVerticalOffset={50}
     >
       <ScreenLayout loading={loading}>
         <FlatList
-          style={{ width: "100%", paddingVertical: 10 }}
+          inverted
+          style={{ width: "100%", marginVertical: 10 }}
           ItemSeparatorComponent={() => <View style={{ height: 20 }}></View>}
-          data={data?.seeRoom?.messages}
+          data={messages}
+          showsVerticalScrollIndicator={false}
           keyExtractor={(message) => "" + message.id}
           renderItem={renderItem}
         />
-        <TextInput
-          placeholderTextColor="rgba(255, 255, 255, 0.5)"
-          placeholder="Write a message..."
-          returnKeyLabel="Send Message"
-          returnKeyType="send"
-          onChangeText={(text) => setValue("message", text)}
-          onSubmitEditing={handleSubmit(onValid)}
-          value={watch("message")}
-        />
+        <InputContainer>
+          <TextInput
+            placeholderTextColor="rgba(255, 255, 255, 0.5)"
+            placeholder="Write a message..."
+            returnKeyLabel="Send Message"
+            returnKeyType="send"
+            onChangeText={(text) => setValue("message", text)}
+            onSubmitEditing={handleSubmit(onValid)}
+            value={watch("message")}
+          />
+          <SendButton
+            onPress={handleSubmit(onValid)}
+            disabled={!Boolean(watch("message"))}
+          >
+            <Ionicons
+              name="send"
+              color={
+                !Boolean(watch("message"))
+                  ? theme === "dark"
+                    ? "rgba(255, 255, 255, 0.5)"
+                    : "rgba(0,0,0,0.5)"
+                  : theme === "dark"
+                  ? "#fff"
+                  : "#000"
+              }
+              size={22}
+            />
+          </SendButton>
+        </InputContainer>
       </ScreenLayout>
     </KeyboardAvoidingView>
   );
