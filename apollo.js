@@ -40,9 +40,9 @@ const wsLink = new WebSocketLink({
   uri: "ws://pharmstagram-backend.herokuapp.com/graphql",
   options: {
     reconnect: true,
-    connectionParams: {
+    connectionParams: () => ({
       token: tokenVar(),
-    },
+    }),
   },
 });
 

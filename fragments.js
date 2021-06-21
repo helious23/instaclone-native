@@ -58,3 +58,15 @@ export const ROOM_FRAGMENT = gql`
     }
   }
 `;
+
+export const MESSAGE_FRAGMENT = gql`
+  fragment Messages on Message {
+    id
+    payload
+    user {
+      username
+      avatar
+    }
+    read
+  }
+`;

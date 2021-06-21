@@ -1,4 +1,10 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
+import {
+  gql,
+  useApolloClient,
+  useMutation,
+  useQuery,
+  useSubscription,
+} from "@apollo/client";
 import React from "react";
 import { useEffect } from "react";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
@@ -8,6 +14,17 @@ import { useForm } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
 import useMe from "../hooks/useMe";
 import { theme } from "../styles";
+import { MESSAGE_FRAGMENT } from "../fragments";
+import { cache } from "../apollo";
+
+const ROOM_UPDATE = gql`
+  subscription roomUpdates($id: Int!) {
+    roomUpdates(id: $id) {
+      ...Messages
+    }
+  }
+  ${MESSAGE_FRAGMENT}
+`;
 
 const SEND_MESSAGE_MUTATION = gql`
   mutation sendMessage($payload: String!, $roomId: Int, $userId: Int) {
@@ -23,16 +40,11 @@ const ROOM_QUERY = gql`
     seeRoom(id: $id) {
       id
       messages {
-        id
-        payload
-        user {
-          username
-          avatar
-        }
-        read
+        ...Messages
       }
     }
   }
+  ${MESSAGE_FRAGMENT}
 `;
 const MessageContainer = styled.View`
   padding: 0px 10px;
@@ -100,14 +112,9 @@ export default function Room({ route, navigation }) {
       const messageFragment = cache.writeFragment({
         fragment: gql`
           fragment NewMessage on Message {
-            id
-            payload
-            user {
-              username
-              avatar
-            }
-            read
+            Messages
           }
+          ${MESSAGE_FRAGMENT}
         `,
         data: messageObj,
       });
@@ -127,11 +134,54 @@ export default function Room({ route, navigation }) {
       update: updateSendMessage,
     }
   );
-  const { data, loading } = useQuery(ROOM_QUERY, {
+  const { data, loading, subscribeToMore } = useQuery(ROOM_QUERY, {
     variables: {
       id: route?.params?.id,
     },
   });
+  const client = useApolloClient();
+  const updateQuery = (prevQuery, options) => {
+    const {
+      subscriptionData: {
+        data: { roomUpdates: message },
+      },
+    } = options;
+    if (message.id) {
+      const messageFragment = client.cache.writeFragment({
+        fragment: gql`
+          fragment NewMessage on Message {
+            id
+            payload
+            user {
+              username
+              avatar
+            }
+            read
+          }
+        `,
+        data: message,
+      });
+      client.cache.modify({
+        id: `Room:${route.params.id}`,
+        fields: {
+          messages(prev) {
+            return [...prev, messageFragment];
+          },
+        },
+      });
+    }
+  };
+  useEffect(() => {
+    if (data?.seeRoom) {
+      subscribeToMore({
+        document: ROOM_UPDATE,
+        variables: {
+          id: route?.params?.id,
+        },
+        updateQuery,
+      });
+    }
+  }, [data]);
   const onValid = ({ message }) => {
     if (!sendingMessage) {
       sendMessageMutation({
